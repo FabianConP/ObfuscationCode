@@ -28,7 +28,7 @@ PS > Test-Add-Persistence-Command "calc"
         $PWS_COMMAND
     )
     
-    $pwsCommandForm = "powershell -c '$PWS_COMMAND'"
+    $pwsCommandForm = "powershell -c `"&{$PWS_COMMAND}`""
     $runKeys = Get-ItemProperty HKCU:\Software\Microsoft\Windows\CurrentVersion\Run
     
     # Check if it already exists a key with the given name
