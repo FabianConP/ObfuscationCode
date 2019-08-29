@@ -28,7 +28,7 @@ PS > Test-Add-Persistence-Script "C:\Users\user\Downloads\Hello.ps1"
         $PWS_FILE_PATH
     )
     
-    $pwsCommandForm = "powershell -File '$PWS_FILE_PATH'"
+    $pwsCommandForm = "powershell -File $PWS_FILE_PATH"
     $runKeys = Get-ItemProperty HKCU:\Software\Microsoft\Windows\CurrentVersion\Run
     
     # Check if it already exists a key with the given name
