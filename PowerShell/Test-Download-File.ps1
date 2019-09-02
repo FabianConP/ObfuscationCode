@@ -16,6 +16,8 @@ The FULL_PATH parameter defines the name and where the file will be downloaded.
 .EXAMPLE
 PS > Test-Download-File "https://mysite.co/Invoke-Mimikatz.ps1" "C:\Users\user\Downloads\script.ps1"
 
+.LINK
+https://github.com/FabianConP/ObfuscationCode
 #>
 
     [CmdletBinding()] Param(

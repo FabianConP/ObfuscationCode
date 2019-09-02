@@ -16,6 +16,8 @@ The HIDDEN parameter whether the new file is hidden or not
 .EXAMPLE
 PS > Test-Create-File "C:\Users\user\Downloads\toto.txt" $True
 
+.LINK
+https://github.com/FabianConP/ObfuscationCode
 #>
 
     [CmdletBinding()] Param(

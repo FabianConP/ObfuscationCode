@@ -16,6 +16,8 @@ The PWS_COMMAND defines the PowerShell command to be executed.
 .EXAMPLE
 PS > Test-Add-Persistence-Command "calc"
 
+.LINK
+https://github.com/FabianConP/ObfuscationCode
 #>
 
     [CmdletBinding()] Param(

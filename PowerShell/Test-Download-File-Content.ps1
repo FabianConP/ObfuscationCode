@@ -16,6 +16,8 @@ The OUT_FILE parameter defines the name and where the file content will be downl
 .EXAMPLE
 PS > Test-Download-File-Content "https://mysite.co/Invoke-Mimikatz.ps1" "C:\Users\user\Downloads\script.ps1"
 
+.LINK
+https://github.com/FabianConP/ObfuscationCode
 #>
 
     [CmdletBinding()] Param(

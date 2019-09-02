@@ -16,6 +16,8 @@ The PWS_COMMAND defines the PowerShell local script to be executed.
 .EXAMPLE
 PS > Test-Add-Persistence-Script "C:\Users\user\Downloads\Hello.ps1"
 
+.LINK
+https://github.com/FabianConP/ObfuscationCode
 #>
 
     [CmdletBinding()] Param(

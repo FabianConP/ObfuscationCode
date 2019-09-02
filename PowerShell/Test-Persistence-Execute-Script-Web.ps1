@@ -1,12 +1,11 @@
-
 function Test-Persistence-Execute-Script-Web
 {
 <#
 .SYNOPSIS
-Custom script which can download file content from a URL and stores it as a PowerShell script in registry keys.
+Custom script which can execute web files from a registry key.
 
 .DESCRIPTION
-This payload downloads file content from a URL and stores it as a PowerShell script in registry keys.
+This payload executes web files from a registry key.
 
 .PARAMETER URL
 The URL parameter defines the file to be downloaded.

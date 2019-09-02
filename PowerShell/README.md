@@ -7,4 +7,6 @@ List of PowerShell scripts to be scanned by Windows Defender. Scripts can be imp
 - Test-Add-Persistence-Script : Adds a registry key under HKCU to execute a PowerShell local script.
 - Test-Download-File : Downloads a file from a URL to a given path. 
 - Test-Download-File-Content : Downloads file content from a URL into a file or stdout.
-- Test-Download-File-Content-Memory : Downloads an executes file content from a URL.
+- Test-Download-File-Content-Execute : Downloads file content from a URL and stores it as a PowerShell script in registry keys.
+- Test-Persistence-Execute-Script-Web : Executes web files from a registry key.
+- Test-Persistence-Execute-Script-Local : Executes a PowerShell local script from a registry key.
