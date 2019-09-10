@@ -1,6 +1,8 @@
 import sys
 sys.path.append('../')
 from Utility import *
+import time
+
 
 def prepare_command(path, params):
     param_str_quotes = ["'{}'".format(param) for param in params]
@@ -13,23 +15,36 @@ def prepare_command(path, params):
 
 
 def test_files(path_files, params):
-    return [test_file(path_file, params) for path_file in path_files]
+    results = []
+    for path_file in path_files:
+        results.append(test_file(path_file, params))
+    return results
 
 
 def test_file(path, params):
-    command = prepare_command(path, params)
-
-    myCmd = os.popen(command).readlines()
-    myCmd = "".join([line for line in myCmd if '\n' != line])
-
     file_name = get_file_name(path)
+    dir_out_file =  params[1] + "Out-" + get_file_name(path) + ".txt"
     file_name_report = "{0:20}".format(file_name)
+
+    command = prepare_command(path, [params[0],dir_out_file])
+    cmd = os.popen(command)
+
+    time.sleep(1)
+
+    cmd_lines = cmd.readlines()
+    cmd_lines = "".join([line for line in cmd_lines if '\n' != line])
+
     result = True
+    result_msg = ''
 
-    if myCmd.find("ScriptContainedMaliciousContent") != -1:
+    if not file_exists(dir_out_file):
         result = False
+        result_msg = "File couldn't be created or was deleted by the Antivirus"
+    elif cmd_lines.find("ScriptContainedMaliciousContent") != -1:
+        result = False
+        result_msg = "Script detected as malicious"
 
-    result_str = "Passed!" if result else "Detected"
+    result_str = "{0:15}".format("Passed!" if result else "Detected") + " " + result_msg
 
     print(file_name_report + result_str)
 
@@ -39,9 +54,8 @@ def test_file(path, params):
 if __name__ == '__main__':
 
     # Create temporary out folder 
-    DIR_TMP_OUT = ".\\tmp-out"
-    create_directory(DIR_TMP_OUT)
-    DIR_TMP_OUT_FILE = DIR_TMP_OUT + '\\file.txt'
+    DIR_OUT = ".\\out\\"
+    restart_directory(DIR_OUT)
 
     # Get list of files
     DIR_GEN_OBF = ".\gen-obf\\"
@@ -49,9 +63,7 @@ if __name__ == '__main__':
 
     # Define params
     params = ['https://raw.githubusercontent.com/leachim6/hello-world/master/j/Java.java',
-                DIR_TMP_OUT_FILE]
+                DIR_OUT]
 
     # Execute and get results
     results = test_files(path_files, params)
-
-    print(results)
