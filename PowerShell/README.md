@@ -1,6 +1,11 @@
 # Custom PowerShell scripts
 
-List of PowerShell scripts to be scanned by Windows Defender. Scripts can be imported using `Import-Module SCRIPT` or `ipmo SCRIPT` under PowerShell.
+List of PowerShell scripts to be scanned by Windows Defender. Scripts can be imported using `Import-Module SCRIPT` or `ipmo SCRIPT` under PowerShell. 
+
+* Obfuscated can be executed using `[SCRIPT]::Execute(params)`.
+* Non-Obfuscated scripts can be executed using `SCRIPT` followed by its parameters.
+
+## Scripts
 
 - Create-File : Creates a file in a given path,  it can be also hidden. 
 - Add-Persistence-Command : Adds a registry key under HKCU to execute a PowerShell command.
