@@ -2,8 +2,8 @@ Class ObfDownloadFileContent3 {
 
     static Execute ([String]$url) {
         #CLI:  Memory\PsWebString\Rearrange\3
-        Set-Variable s $url;Set-Variable k 'Net.WebClient';Set-Variable h (New-Object (GCI Variable:k).Value);SI Variable:e9z 'DownloadString';
-        Write-Host (Item Variable:\h).Value.((Variable e9z).Value).Invoke((Variable s).Value)
+        SI Variable:\5U $url;Set-Item Variable:/B (New-Object Net.WebClient);
+        Write-Host (GV B).Value.DownloadString((Variable 5U -Value));
     }
 
 }
