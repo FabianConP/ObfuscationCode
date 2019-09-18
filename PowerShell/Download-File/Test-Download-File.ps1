@@ -1,4 +1,4 @@
-function Obf-Download-File
+function Test-Download-File
 {
 <#
 .SYNOPSIS

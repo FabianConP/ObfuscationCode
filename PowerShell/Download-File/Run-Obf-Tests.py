@@ -29,7 +29,7 @@ def test_file(path, params):
     command = prepare_command(path, [params[0],dir_out_file])
     cmd = os.popen(command)
 
-    time.sleep(1)
+    time.sleep(0.5)
 
     cmd_lines = cmd.readlines()
     cmd_lines = "".join([line for line in cmd_lines if '\n' != line])
