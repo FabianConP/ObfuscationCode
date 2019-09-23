@@ -4,23 +4,6 @@ from Utility import *
 import time
 
 
-def prepare_command(path, params):
-    param_str_quotes = ["'{}'".format(param) for param in params]
-    params_str = ", ".join(param_str_quotes)
-    file_name = get_file_name(path)
-    import_class = "ipmo .\\gen-obf\\{}.ps1".format(file_name)
-    execute_method = "[{}]::Execute({})".format(file_name, params_str)
-    command = "\"{};{}\"".format(import_class, execute_method)
-    return 'powershell -c {}'.format(command)
-
-
-def test_files(path_files, params):
-    results = []
-    for path_file in path_files:
-        results.append(test_file(path_file, params))
-    return results
-
-
 def test_file(path, params):
     file_name = get_file_name(path)
     dir_out_file =  params[1] + "Out-" + get_file_name(path) + ".txt"
@@ -66,4 +49,4 @@ if __name__ == '__main__':
                 DIR_OUT]
 
     # Execute and get results
-    results = test_files(path_files, params)
+    results = test_files(path_files, params, test_file)
