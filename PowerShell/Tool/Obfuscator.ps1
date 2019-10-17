@@ -1,21 +1,34 @@
-using namespace System.Management.Automation.Language;
+Using module '.\Visitor.psm1'
 
-Class Obfuscator {
+Function Obfuscate-Script {
+<#
 
-    static Execute ($scriptBlock) {
-        Write-Host ($scriptBlock.GetType());
-        #Write-Host $scriptBlock.ast.FindAll({$args[0] -is [CommandAst]}, $true);
-        $stringConstantExpressions = $scriptBlock.ast.FindAll({$args[0] -is [StringConstantExpressionAst]}, $true);
-        foreach($stringConstantExpression in $stringConstantExpressions){
-            if($stringConstantExpression.ToString() -eq "Write-Host"){
-                Write-Host "'$stringConstantExpression' -- can be replaced by'echo' -- ";
-                $extent = $stringConstantExpression.Extent;
-                Write-Host $extent
-            }else{
-                Write-Host $stringConstantExpression.ToString();
-            }
+.PARAMETER ScriptBlock
+    The ScriptBlock to be measured.
+
+    
+.PARAMETER Path
+
+    The Path to a script to be measured.
+#>
+
+[cmdletbinding(DefaultParameterSetName="ScriptBlock")]
+    param(
+        [parameter(Mandatory=$true,ParameterSetName="ScriptBlock")]
+        [scriptblock]$ScriptBlock,
+        [parameter(Mandatory=$true,ParameterSetName="Path")]
+        [string]$Path
+    )
+
+    if($PSBoundParameters.Keys -icontains "Path") {
+        if(-not (Test-Path $path)) {       
+            throw "No such file"
         }
+        $ScriptText = Get-Content $path -Raw 
+        $ScriptBlock = [scriptblock]::Create($ScriptText)
     }
 
-
+    $scriptBlock = [scriptblock]::Create($ScriptBlock.ToString())
+    $visitor  = [Visitor]::new()
+    $scriptBlock.Ast.Visit($visitor)
 }
