@@ -31,4 +31,5 @@ Function Obfuscate-Script {
     $scriptBlock = [scriptblock]::Create($ScriptBlock.ToString())
     $visitor  = [Visitor]::new()
     $scriptBlock.Ast.Visit($visitor)
+    Write-Host $visitor.NewCode.Content
 }

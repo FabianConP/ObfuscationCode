@@ -23,7 +23,7 @@ Class StringObfuscator{
             [Object[]] $SplittedQuotedWordsObf = [StringObfuscator]::SplitIntoQuotedObfStrings($Word, 2)
             return "(" + $SplittedQuotedWordsObf[0] + "+" + $SplittedQuotedWordsObf[1] + ")"
         }
-        return [StringObfuscator]::TerminalNode($Word)
+        return [StringObfuscator]::TerminalWord($Word)
     }
         
     static [String] JoinObfuscation([String] $Word){
@@ -33,7 +33,7 @@ Class StringObfuscator{
             [String] $JoinType = [Utility]::pickOneRandom($JoinTypes)
             return $JoinType -f [StringObfuscator]::SplitIntoQuotedObfStrings($Word, 2)
         }
-        return [StringObfuscator]::TerminalNode($Word)
+        return [StringObfuscator]::TerminalWord($Word)
     }
 
 
@@ -43,24 +43,36 @@ Class StringObfuscator{
             [Object[]] $SplittedQuotedWordsObf = [StringObfuscator]::SplitIntoQuotedObfStrings($Word, 2)
             return "(`"{1}{0}`"-f " + ("{0},{1})" -f $SplittedQuotedWordsObf[1], $SplittedQuotedWordsObf[0])
         }
-        return [StringObfuscator]::TerminalNode($Word)
+        return [StringObfuscator]::TerminalWord($Word)
     }
 
     static [String] Base64Obfuscation([String] $Word){
         [Int] $WordLength = $Word.Length;
         if($WordLength -ge 8){
-            #[String] $Content = $Word.Substring(1, $WordLength - 2)
             [String] $Base64String = [Convert]::ToBase64String([System.Text.Encoding]::UTF8.GetBytes($Word))
-            return "[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String({0}))" -f [StringObfuscator]::TerminalNode($Base64String)
+            return "[Text.Encoding]::UTF8.GetString([Convert]::FromBase64String({0}))" -f [StringObfuscator]::TerminalWord($Base64String)
         }
-        return [StringObfuscator]::TerminalNode($Word)
-        
+        return [StringObfuscator]::TerminalWord($Word)
+    }
+
+    static [String] CapitalisationObfuscation([String] $Word){
+        [String] $CapWord = ""
+        for($i=0; $i -lt $Word.Length; $i++){
+            $ToLower = (Get-Random -Maximum 2) -eq 0
+            [String] $CharToObf =  $Word[$i]
+            if($ToLower){
+                $CapWord += $CharToObf.ToLower()
+            }else{
+                $CapWord += $CharToObf.ToUpper()
+            }
+        }
+        return $CapWord
     }
 
     ## [END] Obfuscation techniques
 
     
-    static [String] TerminalNode([String] $Word){
+    static [String] TerminalWord([String] $Word){
         return "`"" + [StringObfuscator]::SanetizeWord($Word) + "`"";
     }
 
