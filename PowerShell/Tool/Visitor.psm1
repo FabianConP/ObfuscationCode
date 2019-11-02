@@ -92,6 +92,7 @@ class Visitor : System.Management.Automation.Language.ICustomAstVisitor,
     }
     
     [system.object] VisitCatchClause([System.Management.Automation.Language.CatchClauseAst] $statement){
+        $this.VisitElement($statement.Body)
         return $statement
     }
     
@@ -101,6 +102,7 @@ class Visitor : System.Management.Automation.Language.ICustomAstVisitor,
             $this.NewCode.Append($Token).NoSpace()
         }
         $this.VisitElements($statement.CommandElements)
+        $this.VisitElement($statement.Redirections)
         return $statement
     }
     
@@ -168,6 +170,8 @@ class Visitor : System.Management.Automation.Language.ICustomAstVisitor,
     }
     
     [system.object] VisitExitStatement([System.Management.Automation.Language.ExitStatementAst] $statement){
+        $this.NewCode.Append("Exit")
+        $this.VisitElement($statement.Pipeline)
         return $statement
     }
     
@@ -198,6 +202,12 @@ class Visitor : System.Management.Automation.Language.ICustomAstVisitor,
     }
     
     [system.object] VisitFileRedirection([System.Management.Automation.Language.FileRedirectionAst] $statement){
+        If($statement.Append){
+            $this.NewCode.NoSpace().Append(">>")
+        }Else{
+            $this.NewCode.Append(">")
+        }
+        $this.VisitElement($statement.Location)
         return $statement
     }
     
@@ -226,7 +236,12 @@ class Visitor : System.Management.Automation.Language.ICustomAstVisitor,
     }
     
     [system.object] VisitFunctionDefinition([System.Management.Automation.Language.FunctionDefinitionAst] $statement){
-        $this.NewCode.Append("function").Append($statement.Name).Append("{").NewLine()
+        If($statement.IsWorkflow){
+            $this.NewCode.Append("Workflow")
+        }Else{
+            $this.NewCode.Append("Function")
+        }
+        $this.NewCode.Append($statement.Name).Append("{").NewLine()
         $this.VisitElement($statement.Body)
         $this.NewCode.Append("}")
         return $statement
@@ -250,6 +265,18 @@ class Visitor : System.Management.Automation.Language.ICustomAstVisitor,
     }
     
     [system.object] VisitHashtable([System.Management.Automation.Language.HashtableAst] $statement){
+        [Bool] $First = $True
+        $this.NewCode.Append("@").NoSpace().Append("{")
+        ForEach($KeyValuePair in $statement.KeyValuePairs){
+            If(!$First){
+                $this.NewCode.Append(";")
+            }
+            $First = $False
+            $this.VisitElement($KeyValuePair.Item1)
+            $this.NewCode.Append("=")
+            $this.VisitElement($KeyValuePair.Item2)
+        }
+        $this.NewCode.Append("}")
         return $statement
     }
     
@@ -273,6 +300,10 @@ class Visitor : System.Management.Automation.Language.ICustomAstVisitor,
     }
     
     [system.object] VisitIndexExpression([System.Management.Automation.Language.IndexExpressionAst] $statement){
+        $this.VisitElement($statement.Target)
+        $this.NewCode.NoSpace().Append("[").NoSpace()
+        $this.VisitElement($statement.Index)
+        $this.NewCode.NoSpace().Append("]")
         return $statement
     }
     
@@ -300,6 +331,7 @@ class Visitor : System.Management.Automation.Language.ICustomAstVisitor,
     }
     
     [system.object] VisitMergingRedirection([System.Management.Automation.Language.MergingRedirectionAst] $statement){
+        $this.NewCode.Append($statement.ToString())
         return $statement
     }
     
@@ -341,7 +373,7 @@ class Visitor : System.Management.Automation.Language.ICustomAstVisitor,
     }
     
     [system.object] VisitPipeline([System.Management.Automation.Language.PipelineAst] $statement){
-        $this.VisitElements($statement.PipelineElements)
+        $this.VisitElements($statement.PipelineElements, "|")
         return $statement
     }
     
@@ -418,22 +450,61 @@ class Visitor : System.Management.Automation.Language.ICustomAstVisitor,
     }
     
     [system.object] VisitSubExpression([System.Management.Automation.Language.SubExpressionAst] $statement){
+        $this.NewCode.Append("$").NoSpace().Append("(")
+        $this.VisitElement($statement.SubExpression)
+        $this.NewCode.Append(")")
         return $statement
     }
     
     [system.object] VisitSwitchStatement([System.Management.Automation.Language.SwitchStatementAst] $statement){
+        $this.NewCode.Append("Switch").Append("(")
+        $this.VisitElement($statement.Condition)
+        $this.NewCode.Append(")")
+        $this.NewCode.Append("{").NewLine()
+        ForEach($Clause in $statement.Clauses){
+            $this.VisitElement($Clause.Item1)
+            $this.NewCode.Append("{")
+            $this.VisitElement($Clause.Item2)
+            $this.NewCode.Append("}")
+        }
+        If($statement.Default){
+            $this.NewCode.Append("Default").Append("{")
+            $this.VisitElement($statement.Default)
+            $this.NewCode.Append("}")
+        }
+        $this.NewCode.Append("}")
         return $statement
     }
     
     [system.object] VisitThrowStatement([System.Management.Automation.Language.ThrowStatementAst] $statement){
+        $this.NewCode.Append("Throw")
+        $this.VisitElement($statement.Pipeline)
         return $statement
     }
     
     [system.object] VisitTrap([System.Management.Automation.Language.TrapStatementAst] $statement){
+        $this.NewCode.Append("Trap").Append("{")
+        $this.VisitElement($statement.Body)
+        $this.NewCode.Append("}")
         return $statement
     }
     
     [system.object] VisitTryStatement([System.Management.Automation.Language.TryStatementAst] $statement){
+        $this.NewCode.Append("Try").Append("{")
+        $this.VisitElement($statement.Body)
+        $this.NewCode.Append("}")
+        ForEach($CatchClause in $statement.CatchClauses){
+            $this.NewCode.Append("Catch")
+            $this.VisitElements($CatchClause.CatchTypes, ",")
+            $this.NewCode.Append("{")
+            $this.VisitElement($CatchClause)
+            $this.NewCode.Append("}")
+        }
+        If($statement.Finally){
+            $this.NewCode.Append("Finally").Append("{")
+            $this.VisitElement($statement.Finally)
+            $this.NewCode.Append("}")
+        }
         return $statement
     }
     
